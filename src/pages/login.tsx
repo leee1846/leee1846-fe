@@ -1,15 +1,29 @@
 import Link from 'next/link';
 import type { NextPage } from 'next';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import Input from '../components/Global/CustomInput';
 import { validateIdType, validatePwType } from '../utilities/regexUtil';
 import { errorMessages } from '../constants/messages';
 import { isEmptyString } from '../utilities';
+import { postLogin } from '../mockApi/postLogin';
+import accountStore from '../zustand/accountStore';
+import { useRouter } from 'next/router';
 
 const LoginPage: NextPage = () => {
+  const router = useRouter();
+
   const [formData, setFormData] = useState({ id: '', pw: '' });
   const [errors, setErrors] = useState({ id: '', pw: '' });
+
+  const setAccountState = accountStore((selector) => selector.setState);
+  const accessToken = accountStore((selector) => selector.state.accessToken);
+
+  useEffect(() => {
+    if (accessToken) {
+      router.push('/');
+    }
+  }, [accessToken]);
 
   const changeFormData = ({ key, value }: { key: 'id' | 'pw'; value: string }) => {
     setFormData((prev) => {
@@ -54,6 +68,18 @@ const LoginPage: NextPage = () => {
     );
   };
 
+  const onLogin = () => {
+    const response = postLogin(formData);
+
+    if (response.error || !response.accessToken || !response.user) {
+      window.alert(errorMessages.Not_Found);
+      return;
+    }
+
+    setAccountState({ accessToken: response.accessToken, name: response.user.name });
+    router.push('/');
+  };
+
   return (
     <>
       <Header>
@@ -77,7 +103,7 @@ const LoginPage: NextPage = () => {
         />
         <Input
           title={'비밀번호'}
-          type={'text'}
+          type={'password'}
           value={formData.pw}
           placeholder={'PASSWORD'}
           id={'account-pw'}
@@ -85,7 +111,9 @@ const LoginPage: NextPage = () => {
           onBlur={checkPwError}
           onChange={(e) => changeFormData({ key: 'pw', value: e.target.value })}
         />
-        <LoginButton disabled={!LoginBtnEnabledCondition()}>로그인</LoginButton>
+        <LoginButton type={'button'} disabled={!LoginBtnEnabledCondition()} onClick={onLogin}>
+          로그인
+        </LoginButton>
       </Form>
     </>
   );
