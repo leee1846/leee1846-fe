@@ -1,6 +1,8 @@
 import styled from 'styled-components';
 import { Product } from '../types/product';
 import ProductItem from './ProductItem';
+import ErrorContent from './Global/ErrorContent';
+import React from 'react';
 
 type ProductListProps = {
   products: Product[];
@@ -8,11 +10,7 @@ type ProductListProps = {
 
 const ProductList = ({ products }: ProductListProps) => {
   if (products.length < 1) {
-    return (
-      <ErrorContainer>
-        <p>존재하지않는 페이지입니다.</p>
-      </ErrorContainer>
-    );
+    return <ErrorContent text={'존재하지않는 페이지입니다.'} />;
   }
   return (
     <Container>
@@ -25,18 +23,6 @@ const ProductList = ({ products }: ProductListProps) => {
 
 export default ProductList;
 
-const ErrorContainer = styled.ul`
-  height: calc(100vh - 212px);
-  width: 100%;
-  position: relative;
-
-  & > p {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-  }
-`;
 const Container = styled.main`
   display: flex;
   flex-wrap: wrap;

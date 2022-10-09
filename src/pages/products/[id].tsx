@@ -1,18 +1,38 @@
 import type { NextPage } from 'next';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
-
-import products from '../../api/data/products.json';
+import { Product } from '../../types/product';
+import { withComma } from '../../utilities';
+import { useRouter } from 'next/router';
+import { getProductDetail } from '../../mockApi/getProductDetail';
+import ErrorContent from '../../components/Global/ErrorContent';
 
 const ProductDetailPage: NextPage = () => {
-  const product = products[0];
+  const router = useRouter();
+  const { id } = router.query;
 
+  const [product, setProduct] = useState<Product | null>(null);
+
+  useEffect(() => {
+    if (id === undefined || typeof id !== 'string') {
+      return;
+    }
+
+    const response = getProductDetail({ id });
+    if (response) {
+      setProduct(response);
+    }
+  }, [id]);
+
+  if (!product) {
+    return <ErrorContent text={'존재하지않는 상품입니다.'} />;
+  }
   return (
     <>
       <Thumbnail src={product.thumbnail ? product.thumbnail : '/defaultThumbnail.jpg'} />
       <ProductInfoWrapper>
         <Name>{product.name}</Name>
-        <Price>{product.price}원</Price>
+        <Price>{withComma(product.price)}원</Price>
       </ProductInfoWrapper>
     </>
   );
