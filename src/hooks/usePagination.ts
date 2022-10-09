@@ -9,7 +9,7 @@ const usePagination = () => {
   const router = useRouter();
   const { page } = router.query;
 
-  const [currentPage, setCurrentPage] = useState(1);
+  const [currentPage, setCurrentPage] = useState(0);
   const [currentProducts, setCurrentProducts] = useState<any[]>([]);
 
   useEffect(() => {

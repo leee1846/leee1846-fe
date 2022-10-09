@@ -1,17 +1,21 @@
 import styled from 'styled-components';
 
 import { Product } from '../types/product';
+import { withComma } from '../utilities';
+import Link from 'next/link';
 
 type ProductItemProps = {
   product: Product;
 };
 
-const ProductItem = ({ product: { name, thumbnail, price } }: ProductItemProps) => (
-  <Container>
-    <Thumbnail src={thumbnail ? thumbnail : '/defaultThumbnail.jpg'} />
-    <Name>{name}</Name>
-    <Price>{price}</Price>
-  </Container>
+const ProductItem = ({ product: { id, name, thumbnail, price } }: ProductItemProps) => (
+  <Link href={`/products/${id}`}>
+    <Container>
+      <Thumbnail src={thumbnail ? thumbnail : '/defaultThumbnail.jpg'} />
+      <Name>{name}</Name>
+      <Price>{withComma(price)}</Price>
+    </Container>
+  </Link>
 );
 
 export default ProductItem;

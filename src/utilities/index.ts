@@ -15,3 +15,7 @@ export const parseQueryString = (search: string): Record<string, string> =>
 export const isEmptyString = (value: string) => {
   return value === '';
 };
+
+export const withComma = (value: number) => {
+  return value.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,');
+};
