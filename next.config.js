@@ -5,6 +5,12 @@ const nextConfig = {
   compiler: {
     styledComponents: true,
   },
-}
+  images: {
+    domains: ['localhost', 'contents.sixshop.com'],
+  },
+  experimental: {
+    scrollRestoration: true,
+  },
+};
 
-module.exports = nextConfig
+module.exports = nextConfig;

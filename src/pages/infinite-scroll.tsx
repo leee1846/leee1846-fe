@@ -1,41 +1,46 @@
-import Link from 'next/link';
 import type { NextPage } from 'next';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
-
-import products from '../api/data/products.json';
 import ProductList from '../components/ProductList';
+import productsStore from '../zustand/productsStore';
+import { getProducts } from '../mockApi/getProducts';
+import useIntersectionObserver from '../hooks/useIntersectionObserver';
+
+const PRODUCT_COUNT_PER_PAGE = 16;
 
 const InfiniteScrollPage: NextPage = () => {
+  const [hasNext, setHasNext] = useState(true);
+
+  const productState = productsStore((selector) => selector.state);
+  const setProducts = productsStore((selector) => selector.setProducts);
+  const plusPage = productsStore((selector) => selector.plusPage);
+  const { page } = productState;
+
+  // infinite-scroll hook
+  const { setObserverRef } = useIntersectionObserver({
+    callback: () => {
+      plusPage();
+    },
+    hasNext,
+  });
+
+  useEffect(() => {
+    //페이지 변경시 productdata 가져오기
+    const response = getProducts({ page, count: PRODUCT_COUNT_PER_PAGE });
+
+    setHasNext(response.hasNext);
+    setProducts({ products: response.products });
+  }, [page]);
+
   return (
-    <>
-      <Header>
-        <Link href='/'>
-          <Title>HAUS</Title>
-        </Link>
-        <Link href='/login'>
-          <p>login</p>
-        </Link>
-      </Header>
-      <Container>
-        <ProductList products={products} />
-      </Container>
-    </>
+    <Container>
+      <ProductList products={productState.products} />
+      <div ref={setObserverRef} />
+    </Container>
   );
 };
 
 export default InfiniteScrollPage;
-
-const Header = styled.div`
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 20px;
-`;
-
-const Title = styled.a`
-  font-size: 48px;
-`;
 
 const Container = styled.div`
   display: flex;
