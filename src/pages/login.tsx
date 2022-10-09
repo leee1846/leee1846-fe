@@ -16,7 +16,7 @@ const LoginPage: NextPage = () => {
   const [formData, setFormData] = useState({ id: '', pw: '' });
   const [errors, setErrors] = useState({ id: '', pw: '' });
 
-  const setAccountState = accountStore((selector) => selector.setState);
+  const setLogin = accountStore((selector) => selector.setLogin);
   const accessToken = accountStore((selector) => selector.state.accessToken);
 
   useEffect(() => {
@@ -71,12 +71,13 @@ const LoginPage: NextPage = () => {
   const onLogin = () => {
     const response = postLogin(formData);
 
-    if (response.error || !response.accessToken || !response.user) {
+    if (response.error || !response.accessToken || !response.user?.name) {
       window.alert(errorMessages.Not_Found);
       return;
     }
 
-    setAccountState({ accessToken: response.accessToken, name: response.user.name });
+    const { accessToken, user } = response;
+    setLogin({ accessToken, name: user.name });
     router.push('/');
   };
 

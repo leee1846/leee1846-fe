@@ -1,23 +1,39 @@
 import create from 'zustand';
 import { ACCESS_TOKEN, USER_NAME } from '../constants/keys';
 
+interface IAccountParams {
+  accessToken: string;
+  name: string;
+}
 interface IAccountStore {
   state: {
     accessToken: string;
     name: string;
   };
-  setState: ({ accessToken, name }: { accessToken: string; name: string }) => void;
-  clearState: () => void;
+  setState: ({ accessToken, name }: IAccountParams) => void;
+  setLogin: ({ accessToken, name }: IAccountParams) => void;
+  setLogout: () => void;
 }
 
 const accountStore = create<IAccountStore>((set) => ({
   state: {
-    accessToken: window.localStorage.getItem(ACCESS_TOKEN) || '',
-    name: window.localStorage.getItem(USER_NAME) || '',
+    accessToken: '',
+    name: '',
   },
   setState: ({ accessToken, name }) => {
-    window.localStorage.setItem(ACCESS_TOKEN, accessToken);
-    window.localStorage.setItem(USER_NAME, name);
+    set((prev) => ({
+      ...prev,
+      state: {
+        accessToken,
+        name,
+      },
+    }));
+  },
+  setLogin: ({ accessToken, name }) => {
+    if (typeof window !== undefined) {
+      window.localStorage.setItem(ACCESS_TOKEN, accessToken);
+      window.localStorage.setItem(USER_NAME, name);
+    }
 
     set((prev) => ({
       ...prev,
@@ -27,7 +43,7 @@ const accountStore = create<IAccountStore>((set) => ({
       },
     }));
   },
-  clearState: () => {
+  setLogout: () => {
     set((prev) => ({
       ...prev,
       state: {

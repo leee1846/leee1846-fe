@@ -2,17 +2,38 @@ import Link from 'next/link';
 import type { NextPage } from 'next';
 import React from 'react';
 import styled from 'styled-components';
+import accountStore from '../zustand/accountStore';
+import { isEmptyString } from '../utilities';
 
 const HomePage: NextPage = () => {
+  const { accessToken, name } = accountStore((selector) => selector.state);
+  const setLogout = accountStore((selector) => selector.setLogout);
+
+  const isLoggedIn = !isEmptyString(accessToken);
+
+  const logout = () => {
+    setLogout();
+  };
+
   return (
     <>
       <Header>
         <Link href='/'>
           <Title>HAUS</Title>
         </Link>
-        <Link href='/login'>
-          <p>login</p>
-        </Link>
+        {isLoggedIn && (
+          <div>
+            <p>{name}</p>
+            <button type={'button'} onClick={logout}>
+              logout
+            </button>
+          </div>
+        )}
+        {!isLoggedIn && (
+          <Link href='/login'>
+            <p>login</p>
+          </Link>
+        )}
       </Header>
       <Container>
         <Link href='/pagination?page=1'>
