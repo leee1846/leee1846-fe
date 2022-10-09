@@ -3,6 +3,7 @@ import styled from 'styled-components';
 import setupMSW from '../api/setup';
 import GlobalStyle from '../styles/GlobalStyle';
 import useCheckAccount from '../hooks/useCheckAccount';
+import Header from '../components/Global/Header';
 
 setupMSW();
 
@@ -14,6 +15,7 @@ function MyApp({ Component, pageProps }: AppProps) {
       <GlobalStyle />
       <Background />
       <Content>
+        <Header />
         <Component {...pageProps} />
       </Content>
     </>

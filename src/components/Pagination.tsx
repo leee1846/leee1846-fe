@@ -1,21 +1,49 @@
 import React from 'react';
 import styled from 'styled-components';
 import { VscChevronLeft, VscChevronRight } from 'react-icons/vsc';
+import { useRouter } from 'next/router';
 
-const Pagination = () => {
+interface IPagination {
+  pages: any[];
+  currentPage: number;
+  isFirst: boolean;
+  isLast: boolean;
+}
+const Pagination = ({ pages, currentPage, isFirst, isLast }: IPagination) => {
+  const router = useRouter();
+
+  const onClickPage = (page: number) => {
+    router.push(`/pagination?page=${page}`);
+  };
+
+  const onClickArrowBtn = ({ type }: { type: 'prev' | 'next' }) => {
+    if (type === 'prev') {
+      router.push(`/pagination?page=${pages[0] - 1 || 1}`);
+      return;
+    }
+
+    router.push(`/pagination?page=${pages[pages.length - 1] + 1}`);
+  };
+
   return (
     <Container>
-      <Button disabled>
+      <Button type={'button'} onClick={() => onClickArrowBtn({ type: 'prev' })} disabled={isFirst}>
         <VscChevronLeft />
       </Button>
       <PageWrapper>
-        {[1, 2, 3, 4, 5].map((page) => (
-          <Page key={page} selected={page === 1} disabled={page === 1}>
+        {pages.map((page, index) => (
+          <Page
+            type={'button'}
+            key={`pagination-${index + 1}`}
+            selected={page === currentPage}
+            disabled={page === currentPage}
+            onClick={() => onClickPage(page)}
+          >
             {page}
           </Page>
         ))}
       </PageWrapper>
-      <Button disabled={false}>
+      <Button onClick={() => onClickArrowBtn({ type: 'next' })} disabled={isLast}>
         <VscChevronRight />
       </Button>
     </Container>

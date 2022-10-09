@@ -1,5 +1,4 @@
 import styled from 'styled-components';
-
 import { Product } from '../types/product';
 import ProductItem from './ProductItem';
 
@@ -7,16 +6,36 @@ type ProductListProps = {
   products: Product[];
 };
 
-const ProductList = ({ products }: ProductListProps) => (
-  <Container>
-    {products.map((product) => (
-      <ProductItem key={product.id} product={product} />
-    ))}
-  </Container>
-);
+const ProductList = ({ products }: ProductListProps) => {
+  if (products.length < 1) {
+    return (
+      <ErrorContainer>
+        <p>존재하지않는 페이지입니다.</p>
+      </ErrorContainer>
+    );
+  }
+  return (
+    <Container>
+      {products.map((product) => (
+        <ProductItem key={product.id} product={product} />
+      ))}
+    </Container>
+  );
+};
 
 export default ProductList;
 
+const ErrorContainer = styled.div`
+  height: calc(100vh - 212px);
+  width: 100%;
+  position: relative;
+  & > p {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+  }
+`;
 const Container = styled.div`
   display: flex;
   flex-wrap: wrap;
