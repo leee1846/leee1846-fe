@@ -25,10 +25,11 @@ const ProductList = ({ products }: ProductListProps) => {
 
 export default ProductList;
 
-const ErrorContainer = styled.div`
+const ErrorContainer = styled.ul`
   height: calc(100vh - 212px);
   width: 100%;
   position: relative;
+
   & > p {
     position: absolute;
     top: 50%;
@@ -36,7 +37,7 @@ const ErrorContainer = styled.div`
     transform: translate(-50%, -50%);
   }
 `;
-const Container = styled.div`
+const Container = styled.main`
   display: flex;
   flex-wrap: wrap;
   width: 400px;

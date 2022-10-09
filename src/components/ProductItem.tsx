@@ -10,21 +10,24 @@ type ProductItemProps = {
 };
 
 const ProductItem = ({ product: { id, name, thumbnail, price } }: ProductItemProps) => (
-  <Link href={`/products/${id}`}>
-    <Container>
-      <Thumbnail src={thumbnail ? thumbnail : '/defaultThumbnail.jpg'} width={500} height={500} />
-      <Name>{name}</Name>
-      <Price>{withComma(price)}</Price>
-    </Container>
-  </Link>
+  <Container>
+    <Link href={`/products/${id}`}>
+      <a>
+        <Thumbnail src={thumbnail ? thumbnail : '/defaultThumbnail.jpg'} width={500} height={500} />
+        <Name>{name}</Name>
+        <Price>{withComma(price)}</Price>
+      </a>
+    </Link>
+  </Container>
 );
 
 export default ProductItem;
 
-const Container = styled.a`
+const Container = styled.li`
   width: 180px;
   margin-left: 20px;
   margin-top: 20px;
+  list-style: none;
 `;
 
 const Thumbnail = styled(Image)`
