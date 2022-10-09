@@ -1,14 +1,39 @@
 import type { NextPage } from 'next';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
-
-import products from '../api/data/products.json';
 import ProductList from '../components/ProductList';
+import productsStore from '../zustand/productsStore';
+import { getProducts } from '../mockApi/getProducts';
+import useIntersectionObserver from '../hooks/useIntersectionObserver';
+
+const PRODUCT_COUNT_PER_PAGE = 16;
 
 const InfiniteScrollPage: NextPage = () => {
+  const [hasNext, setHasNext] = useState(true);
+
+  const productState = productsStore((selector) => selector.state);
+  const setProducts = productsStore((selector) => selector.setProducts);
+  const plusPage = productsStore((selector) => selector.plusPage);
+  const { page } = productState;
+
+  const { setObserverRef } = useIntersectionObserver({
+    callback: () => {
+      plusPage();
+    },
+    hasNext,
+  });
+
+  useEffect(() => {
+    const response = getProducts({ page, count: PRODUCT_COUNT_PER_PAGE });
+
+    setHasNext(response.hasNext);
+    setProducts({ products: response.products });
+  }, [page]);
+
   return (
     <Container>
-      <ProductList products={products} />
+      <ProductList products={productState.products} />
+      <div ref={setObserverRef} />
     </Container>
   );
 };

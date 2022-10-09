@@ -16,8 +16,8 @@ const ProductList = ({ products }: ProductListProps) => {
   }
   return (
     <Container>
-      {products.map((product) => (
-        <ProductItem key={product.id} product={product} />
+      {products.map((product, index) => (
+        <ProductItem key={`product-${index + 1}`} product={product} />
       ))}
     </Container>
   );
