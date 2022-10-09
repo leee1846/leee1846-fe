@@ -9,7 +9,7 @@ interface IGetProducts {
 export const getProducts = ({
   page,
   count,
-}: IGetProducts): { products: Product[]; hasNext: boolean } => {
+}: IGetProducts): { products: Product[]; hasNext: boolean; totalLength: number } => {
   const from = (page - 1) * count;
   const to = page * count;
   const totalLength = products.length;
@@ -17,5 +17,6 @@ export const getProducts = ({
   return {
     products: products.slice(from, to),
     hasNext: to < totalLength,
+    totalLength,
   };
 };

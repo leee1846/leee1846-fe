@@ -1,37 +1,18 @@
-import { useEffect, useState } from 'react';
-import products from '../api/data/products.json';
-import { useRouter } from 'next/router';
-
-const PRODUCT_COUNT_PER_PAGE = 10;
-const PAGE_COUNT = 5;
-
-const usePagination = () => {
-  const router = useRouter();
-  const { page } = router.query;
-
-  const [currentPage, setCurrentPage] = useState(0);
-  const [currentProducts, setCurrentProducts] = useState<any[]>([]);
-
-  useEffect(() => {
-    if (page && typeof page === 'string') {
-      setCurrentPage(Number(page) || 1);
-    }
-  }, [page]);
-
-  useEffect(() => {
-    setCurrentProducts(() => {
-      return products.slice(
-        (currentPage - 1) * PRODUCT_COUNT_PER_PAGE,
-        currentPage * PRODUCT_COUNT_PER_PAGE
-      );
-    });
-  }, [currentPage]);
-
-  const pageGroup = Math.ceil(currentPage / PAGE_COUNT);
-  const lastPageOfPageGroup = pageGroup * PAGE_COUNT;
-  const firstPageOfPageGroup = lastPageOfPageGroup - (PAGE_COUNT - 1);
-  const productTotalLength = products.length;
-  const lastPage = Math.ceil(productTotalLength / PRODUCT_COUNT_PER_PAGE);
+interface IUsePagination {
+  // 현재 페이지
+  currentPage: number;
+  //페이지네이션 갯수
+  pageCount: number;
+  //페이지당 보여줄 상품 수
+  itemCount: number;
+  // 상품의 모든 갯수
+  totalLength: number;
+}
+const usePagination = ({ currentPage, pageCount, itemCount, totalLength }: IUsePagination) => {
+  const pageGroup = Math.ceil(currentPage / pageCount);
+  const lastPageOfPageGroup = pageGroup * pageCount;
+  const firstPageOfPageGroup = lastPageOfPageGroup - (pageCount - 1);
+  const lastPage = Math.ceil(totalLength / itemCount);
 
   const pages = () => {
     let result = [];
@@ -47,8 +28,9 @@ const usePagination = () => {
   return {
     currentPage,
     pages: pages(),
-    currentProducts,
+    // 1번 페이지가 아닌  첫번째 페이지 그룹
     isFirst: firstPageOfPageGroup < 2,
+    // 마지막 페이지가 아닌 마지막 페이지 그룹
     isLast: lastPageOfPageGroup >= lastPage,
   };
 };

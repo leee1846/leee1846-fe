@@ -16,6 +16,7 @@ const InfiniteScrollPage: NextPage = () => {
   const plusPage = productsStore((selector) => selector.plusPage);
   const { page } = productState;
 
+  // infinite-scroll hook
   const { setObserverRef } = useIntersectionObserver({
     callback: () => {
       plusPage();
@@ -24,6 +25,7 @@ const InfiniteScrollPage: NextPage = () => {
   });
 
   useEffect(() => {
+    //페이지 변경시 productdata 가져오기
     const response = getProducts({ page, count: PRODUCT_COUNT_PER_PAGE });
 
     setHasNext(response.hasNext);
