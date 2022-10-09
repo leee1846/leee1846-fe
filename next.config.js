@@ -5,6 +5,9 @@ const nextConfig = {
   compiler: {
     styledComponents: true,
   },
-}
+  images: {
+    domains: ['localhost', 'contents.sixshop.com'],
+  },
+};
 
-module.exports = nextConfig
+module.exports = nextConfig;
